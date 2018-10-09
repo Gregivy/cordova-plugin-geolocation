@@ -32,17 +32,26 @@ xmlns:android="http://schemas.android.com/apk/res/android"
     <issue>https://issues.apache.org/jira/browse/CB/component/12320638</issue>
 
     <engines>
-        <engine name="cordova-android" version=">=6.3.0" />
+        <engine name="cordova" version=">=7.1.0"/>
+        <engine name="cordova-android" version=">=7.0.0"/>
+        <engine name="cordova-ios" version=">=4.3.0"/>
     </engines>
 
     <!-- android -->
     <platform name="android">
+        <preference name="GOOGLE_SERVICES_VERSION" default="15.0.+"/>
 
         <config-file target="AndroidManifest.xml" parent="/*">
             <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
             <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-            <uses-feature android:name="android.hardware.location.gps" />
+            <uses-feature android:name="android.hardware.location" android:required="false" />
+            <uses-feature android:name="android.hardware.location.gps" android:required="false" />
+            <uses-feature android:name="android.hardware.location.network" android:required="false" />
         </config-file>
+
+        <dependency id="cordova-support-android-plugin" version="~1.0.0"/>
+
+        <framework src="com.google.android.gms:play-services-location:$GOOGLE_SERVICES_VERSION" />
 
         <config-file target="res/xml/config.xml" parent="/*">
           <feature name="Geolocation">
@@ -52,13 +61,20 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 
         <source-file src="src/android/Geolocation.java" target-dir="src/org/apache/cordova/geolocation/" />
 
-        <js-module src="www/android/geolocation.js" name="geolocation">
-            <clobbers target="navigator.geolocation" />
+        <js-module src="www/Coordinates.js" name="Coordinates">
+            <clobbers target="Coordinates" />
         </js-module>
 
-        <!-- We don't expose PositionError via clobber on Android as we use it internally only -->
         <js-module src="www/PositionError.js" name="PositionError">
-            <runs />
+            <clobbers target="PositionError" />
+        </js-module>
+
+        <js-module src="www/Position.js" name="Position">
+            <clobbers target="Position" />
+        </js-module>
+
+        <js-module src="www/geolocation.js" name="geolocation">
+            <clobbers target="navigator.geolocation" />
         </js-module>
 
     </platform>
